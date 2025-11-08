@@ -38,7 +38,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark pt-20 lg:pt-0"
     >
       {/* Morphing Background */}
       <MorphingBackground />
@@ -62,24 +62,20 @@ export default function Hero() {
         }}
       />
 
-      <div className="container-custom relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="container-custom relative z-10 py-8 lg:py-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           {/* Left Content */}
           <div
-            className={`space-y-8 ${mounted ? "animate-fade-in" : "opacity-0"}`}
+            className={`space-y-5 lg:space-y-8 order-2 lg:order-1 ${mounted ? "animate-fade-in" : "opacity-0"}`}
           >
-            {/* Flip Clock */}
-            <div className="inline-block">
-              <FlipClock />
-            </div>
-
             {/* Main Heading */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-center lg:text-left"
             >
-              <h1 className="font-bebas text-hero uppercase leading-none mb-4">
+              <h1 className="font-bebas text-4xl sm:text-5xl md:text-6xl lg:text-hero uppercase leading-none mb-3">
                 <SplitText text="SOFTWARE" className="inline-block" />
                 <br />
                 <span className="text-primary">
@@ -90,7 +86,7 @@ export default function Hero() {
                   />
                 </span>
               </h1>
-              <div className="text-xl md:text-2xl text-gray max-w-xl">
+              <div className="text-sm sm:text-base md:text-lg lg:text-2xl text-gray max-w-xl mx-auto lg:mx-0">
                 <Typewriter
                   text="Building scalable solutions with clean, maintainable code. Specializing in Python, FastAPI, and Next.js."
                   delay={800}
@@ -99,8 +95,13 @@ export default function Hero() {
               </div>
             </motion.div>
 
-            {/* Navigation Menu */}
-            <nav className="flex flex-col gap-2 font-bebas text-lg">
+            {/* Flip Clock */}
+            <div className="flex justify-center lg:justify-start">
+              <FlipClock />
+            </div>
+
+            {/* Navigation Menu - Hidden on mobile, shown on desktop */}
+            <nav className="hidden lg:flex flex-col gap-2 font-bebas text-lg">
               <Link
                 href="/about"
                 className="text-gray-light hover:text-primary transition-colors uppercase tracking-wider"
@@ -122,19 +123,19 @@ export default function Hero() {
             </nav>
 
             {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
               <Button variant="primary" asChild>
-                <Link href="/contact">Let's Work Together</Link>
+                <Link href="/contact" className="w-full sm:w-auto text-center">Let's Work Together</Link>
               </Button>
               <Button variant="outline" asChild>
-                <Link href="/resume.pdf" target="_blank">
+                <Link href="/resume.pdf" target="_blank" className="w-full sm:w-auto text-center">
                   Download Resume
                 </Link>
               </Button>
             </div>
 
             {/* Social Links */}
-            <div className="flex gap-4 pt-4">
+            <div className="flex gap-4 justify-center lg:justify-start">
               <a
                 href="https://github.com/basudevghosh"
                 target="_blank"
@@ -163,12 +164,12 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Right Content - Profile Image */}
+          {/* Right Content - Profile Image (Desktop) */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="relative"
+            className="relative hidden lg:block"
           >
             <ParallaxScroll offset={150} speed={2.5}>
               <motion.div
@@ -219,6 +220,37 @@ export default function Hero() {
                 </motion.div>
               </motion.div>
             </ParallaxScroll>
+          </motion.div>
+
+          {/* Right Content - Profile Image (Mobile - Simplified) */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="relative lg:hidden order-1 lg:order-2"
+          >
+            <div className="relative aspect-[4/5] max-w-[280px] sm:max-w-xs mx-auto">
+              {/* Image Container */}
+              <div className="relative w-full h-full bg-dark-light rounded-2xl overflow-hidden border border-gray-dark/20">
+                <Image
+                  src="/images/hero/profile.jpg"
+                  alt="Basudev Ghosh - Software Developer"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+
+              {/* Info Card */}
+              <div className="absolute -bottom-3 -left-3 bg-primary p-3 rounded-lg shadow-xl">
+                <p className="font-bebas text-lg text-dark uppercase">
+                  {SITE_CONFIG.name}
+                </p>
+                <p className="text-dark text-xs font-semibold">
+                  Based in {SITE_CONFIG.location}
+                </p>
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
