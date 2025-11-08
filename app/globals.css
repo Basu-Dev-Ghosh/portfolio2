@@ -51,6 +51,22 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
+  /* Mobile performance optimizations */
+  @media (max-width: 1024px) {
+    /* Optimize scrolling performance */
+    * {
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+
+    /* Reduce blur effects on mobile */
+    *[class*="blur-3xl"], *[class*="blur-2xl"] {
+      filter: blur(20px) !important;
+    }
+  }
+
   html {
     scroll-behavior: smooth;
   }

@@ -14,11 +14,19 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 50);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -29,9 +37,10 @@ export default function Header() {
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+          "fixed top-0 left-0 right-0 z-50",
+          "transition-[background-color,border-color,box-shadow] duration-200 ease-out will-change-auto",
           isScrolled
-            ? "bg-dark/80 backdrop-blur-xl border-b border-primary/10 shadow-lg shadow-black/50"
+            ? "bg-white/95 dark:bg-dark/95 backdrop-blur-md border-b border-gray-light/20 dark:border-primary/10 shadow-md"
             : "bg-transparent"
         )}
       >
@@ -48,7 +57,7 @@ export default function Header() {
               >
                 BASUDEV
               </motion.span>
-              <span className="text-white">.DEV</span>
+              <span className="text-gray-dark dark:text-white">.DEV</span>
 
               {/* Underline animation */}
               <motion.span
@@ -70,7 +79,7 @@ export default function Header() {
                 >
                   <Link
                     href={link.href}
-                    className="group relative font-bebas text-lg uppercase tracking-wider text-gray hover:text-primary transition-colors"
+                    className="group relative font-bebas text-lg uppercase tracking-wider text-gray-dark dark:text-gray hover:text-primary transition-colors"
                   >
                     {link.name}
                     <motion.span
@@ -116,7 +125,7 @@ export default function Header() {
               {/* Mobile Menu Toggle */}
               <motion.button
                 whileTap={{ scale: 0.9 }}
-                className="text-white w-10 h-10 flex items-center justify-center"
+                className="text-gray-dark dark:text-white w-10 h-10 flex items-center justify-center"
                 onClick={() => setIsMobileMenuOpen(true)}
                 aria-label="Toggle menu"
               >

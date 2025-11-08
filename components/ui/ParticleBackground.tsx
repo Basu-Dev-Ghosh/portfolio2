@@ -1,10 +1,21 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 export default function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -59,9 +70,11 @@ export default function ParticleBackground() {
       }
     }
 
-    // Create particles
+    // Create particles - fewer on mobile for performance
     const particles: Particle[] = [];
-    const particleCount = Math.floor((canvas.width * canvas.height) / 15000);
+    const particleCount = isMobile
+      ? Math.floor((canvas.width * canvas.height) / 30000) // Half particles on mobile
+      : Math.floor((canvas.width * canvas.height) / 15000);
 
     for (let i = 0; i < particleCount; i++) {
       particles.push(new Particle(canvas.width, canvas.height));
@@ -77,23 +90,25 @@ export default function ParticleBackground() {
         particle.draw(ctx);
       });
 
-      // Draw connections
-      particles.forEach((p1, i) => {
-        particles.slice(i + 1).forEach((p2) => {
-          const dx = p1.x - p2.x;
-          const dy = p1.y - p2.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+      // Draw connections - skip on mobile for better performance
+      if (!isMobile) {
+        particles.forEach((p1, i) => {
+          particles.slice(i + 1).forEach((p2) => {
+            const dx = p1.x - p2.x;
+            const dy = p1.y - p2.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (distance < 100) {
-            ctx.strokeStyle = `rgba(184, 214, 38, ${0.1 * (1 - distance / 100)})`;
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.stroke();
-          }
+            if (distance < 100) {
+              ctx.strokeStyle = `rgba(184, 214, 38, ${0.1 * (1 - distance / 100)})`;
+              ctx.lineWidth = 0.5;
+              ctx.beginPath();
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
+            }
+          });
         });
-      });
+      }
 
       requestAnimationFrame(animate);
     };
@@ -103,7 +118,7 @@ export default function ParticleBackground() {
     return () => {
       window.removeEventListener("resize", setCanvasSize);
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <motion.canvas

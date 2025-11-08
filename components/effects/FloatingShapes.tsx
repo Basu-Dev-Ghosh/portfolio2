@@ -1,8 +1,24 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
 export default function FloatingShapes() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Disable on mobile for performance
+  if (isMobile) return null;
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {/* Shape 1 - Circle */}
